@@ -17,12 +17,13 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 
 function OrderPage() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 //   const cart = useSelector(state => state.cart)
 const { id: orderId } = useParams();
 
 
 //   const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price* item.qty, 0).toFixed(2);
-
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -46,7 +47,6 @@ const itemsPrice = !loading && !error && order?.orderItems
 const shippingPrice = (itemsPrice > 100 ? 0: 10).toFixed(2);
 const taxPrice = Number(0.12* itemsPrice).toFixed(2);
 const totalPrice = (Number (itemsPrice) + Number (shippingPrice) + Number(taxPrice)).toFixed(2);
-
 
   useEffect(() => {
     // if (!cart.paymentMethod) {
@@ -176,21 +176,29 @@ const addPayPalScript = () => {
     </Message>
   ) : (
     <ListGroup variant='flush'>
-      {order?.orderItems?.map((item, index) => (
-        <ListGroup.Item key={item.product}>
-          <Row>
-            <Col md={1}>
-              <Image src={item.image} alt={item.name} fluid rounded />
-            </Col>
-            <Col>
-              <Link to={`/products/${item.product}`}>{item.name}</Link>
-            </Col>
-            <Col md={4}>
-              {item.qty} x ${item.price} = ${(item.qty * item.price).toFixed(2)}
-            </Col>
-          </Row>
-        </ListGroup.Item>
-      ))}
+      {order?.orderItems?.map((item, index) => {
+  console.log("Order item image:", item.image); // <-- add this
+  return (
+    <ListGroup.Item key={item.product}>
+      <Row>
+        <Col md={1}>
+          <Image
+            src={`${BASE_URL}${item.image}`}
+            alt={item.name}
+            fluid
+            rounded
+          />
+        </Col>
+        <Col>
+          <Link to={`/product/${item.product}`}>{item.name}</Link>
+        </Col>
+        <Col md={4}>
+          {item.qty} x ${item.price} = ${(item.qty * item.price).toFixed(2)}
+        </Col>
+      </Row>
+    </ListGroup.Item>
+  )
+})}
     </ListGroup>
   )}
 </ListGroup.Item>

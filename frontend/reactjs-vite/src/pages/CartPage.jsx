@@ -6,6 +6,8 @@ import Message from '../components/Message'
 import { addToCart, removeFromCart } from '../actions/cartActions'
 
 function CartPage() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const { id } = useParams()
   const location = useLocation()
   const [search, setSearch] = useSearchParams()
@@ -47,7 +49,7 @@ function CartPage() {
               <ListGroup.Item key={item.product}>
                 <Row>
                   <Col md={2}>
-                    <Image src={item.image} alt={item.name} fluid rounded />
+                    <Image src={`${BASE_URL}${item.image}`} alt={item.name} fluid rounded />
                   </Col>
                   <Col md={3}>
                     <Link to={`/product/${item.product}`}>{item.name}</Link>
@@ -61,11 +63,11 @@ function CartPage() {
                         dispatch(addToCart(item.product, Number(e.target.value)))
                       }
                     >
-                      {[...Array(item.countInStock).keys()].map((x) => (
-                        <option key={x + 1} value={x + 1}>
-                          {x + 1}
-                        </option>
-                      ))}
+                      {Array.from({ length: item.countInStock || 0 }, (_, x) => (
+  <option key={x + 1} value={x + 1}>
+    {x + 1}
+  </option>
+))}
                     </Form.Control>
                   </Col>
                   <Col md={1}>

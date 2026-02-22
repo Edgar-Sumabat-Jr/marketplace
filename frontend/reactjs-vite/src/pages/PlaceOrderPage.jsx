@@ -9,6 +9,8 @@ import { createOrder } from '../actions/orderActions'
 import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 function PlaceOrderPage() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const cart = useSelector(state => state.cart)
 
   const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price* item.qty, 0).toFixed(2);
@@ -92,10 +94,10 @@ const totalPrice = (Number (itemsPrice) + Number (shippingPrice) + Number(taxPri
         <ListGroup.Item key={index}>
           <Row>
             <Col md={1}>
-              <Image src={item.image} alt={item.name} fluid rounded />
+              <Image src={`${BASE_URL}${item.image}`} alt={item.name} fluid rounded />
             </Col>
             <Col>
-              <Link to={`/products/${item.product}`}>{item.name}</Link>
+              <Link to={`/product/${item.product}`}>{item.name}</Link>
             </Col>
             <Col md={4}>
               {item.qty} x ${item.price} = ${(item.qty * item.price).toFixed(2)}
